@@ -110,13 +110,21 @@ class MomentJs implements FormatsInterface
      */
     protected function momentJsToPhp($format)
     {
+    	// Проверяем расположение месяца в строке, если он идет не первым, то меняем его падеж на именительный 
+        preg_match('/D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/', $format, $matchesCustom);
+        if (!empty($matchesCustom)){
+        	$format = str_replace('MMMM', 'F', $format);
+        }else{
+        	$format = str_replace('MMMM', 'f', $format);
+        }
+        
         $tokens = $this->getTokens();
 
         // find all tokens from string, using regular expression
         $regExp = "/(\[[^\[]*\])|(\\\\)?(LTS?|LL?L?L?|l{1,4}|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|YYYYY|YYYY|YY|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|mm?|ss?|SS?S?|X|zz?|ZZ?|.)/";
         $matches = array();
         preg_match_all($regExp, $format, $matches);
-
+        
         //  if there is no match found then return the string as it is
         //  TODO: might return escaped string
         if (empty($matches) || is_array($matches) === false)
@@ -129,7 +137,7 @@ class MomentJs implements FormatsInterface
         $phpMatches = array();
 
         //  ----------------------------------
-
+        
         foreach ($matches[0] as $id => $match)
         {
             // if there is a matching php token in token list
