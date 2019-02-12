@@ -44,8 +44,8 @@ $getNumEnding = function ($number, array $endingArray)
 
 return array(
     'months'            => explode('_', 'января_февраля_марта_апреля_мая_июня_июля_августа_сентября_октября_ноября_декабря'),
-    'monthsNominative'  => explode('_', 'январь_февраль_март_апрель_май_июнь_июль_август_сентябрь_октябрь_ноябрь_декабрь'),
-    'monthsShort'       => explode('_', 'янв_фев_мрт_апр_май_июн_июл_авг_сен_окт_нбр_дек'),
+    'monthsNominative'  => explode('_', 'Январь_Февраль_Март_Апрель_Май_Июнь_Июль_Август_Сентябрь_Октябрь_Ноябрь_Декабрь'),
+    'monthsShort'       => explode('_', 'янв_фев_мар_апр_май_июн_июл_авг_сен_окт_ноя_дек'),
     'weekdays'          => explode('_', 'понедельник_вторник_среда_четверг_пятница_суббота_воскресенье'),
     'weekdaysShort'     => explode('_', 'пн_вт_ср_чт_пт_сб_вс'),
     'calendar'          => array(
@@ -58,7 +58,7 @@ return array(
         'default'  => 'd/m/Y',
     ),
     'relativeTime'      => array(
-        'future' => 'через %s',
+        'future' => 'в %s',
         'past'   => '%s назад',
         's'      => 'несколько секунд',
         'ss'     => function ($number) use ($getNumEnding)
@@ -93,7 +93,15 @@ return array(
     ),
     'ordinal'       => function ($number)
     {
-        return $number . 'е';
+        $n = $number % 100;
+        $ends = array('ой', 'ый', 'ой', 'ий', 'ый', 'ый', 'ой', 'ой', 'ой', 'ый');
+
+        if ($n >= 11 && $n <= 13)
+        {
+            return $number . '[th]';
+        }
+
+        return $number . '[' . $ends[$number % 10] . ']';
     },
     'week'          => array(
         'dow' => 1, // Monday is the first day of the week.
